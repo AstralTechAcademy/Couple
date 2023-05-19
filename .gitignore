@@ -1,0 +1,4 @@
+.DS_Store
+Docker/data/*
+Docker/database/data*
+Docker/database/etc*
