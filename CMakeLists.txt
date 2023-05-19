@@ -105,9 +105,6 @@ qt6_add_resources(RESOURCES ./qml.qrc)
 
 if(ANDROID)
     qt_add_executable(${PROJECT_NAME}  main.cpp ${RESOURCES})
-    #add_library(${PROJECT_NAME} SHARED
-    #        main.cpp
-    #        ${RESOURCES})
     qt_finalize_executable(${PROJECT_NAME})
 else()
 add_executable(${PROJECT_NAME}
@@ -129,7 +126,8 @@ target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysq
 endif()
 
 if(MACOS)
-target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
-set_target_properties(${PROJECT_NAME}  PROPERTIES
-MACOSX_BUNDLE FALSE)
+target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
+set_target_properties(${PROJECT_NAME}  PROPERTIES       
+                        RUNTIME_OUTPUT_DIRECTORY ./release/MacOS
+                        MACOSX_BUNDLE FALSE)
 endif()
