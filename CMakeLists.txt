@@ -4,6 +4,12 @@ project(Couple)
 
 set(PROJECT_NAME "Couple") 
 
+# Use the cmake_host_system_information command to get the system information
+cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
+
+# Print the detected operating system name
+message("Detected operating system: ${OS_DETAILS}")
+
 message(STATUS "------- COMPILER CONFIGURATION -------")
 
 if(LINUX)
@@ -22,7 +28,7 @@ if(WIN)
     message(STATUS "    CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 endif()
 
-if(MACOS)
+if(${OS_DETAILS} STREQUAL macOS)
     message(STATUS "    CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
     message(STATUS "    CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 endif()
@@ -38,7 +44,7 @@ set(CMAKE_AUTOUIC ON)
 
 message(STATUS "------- QT CONFIGURATION -------")
 
-if(LINUX)
+if(${OS_DETAILS} STREQUAL Linux)
     set(Qt5Core_VERSION "5.15.2")
     set(Qt5_DIR "~/Qt/${Qt5Core_VERSION}")
     set(CMAKE_MODULE_PATH "${Qt5_DIR}")
@@ -48,7 +54,7 @@ if(LINUX)
     message(STATUS "    QML_IMPORT_PATH: ${QML_IMPORT_PATH}")
 endif()
 
-if(WIN)
+if(${OS_DETAILS} STREQUAL Windows)
     set(CMAKE_PREFIX_PATH "D:/Qt/5.15.2/mingw81_64/lib/cmake/Qt5")
     set(Qt5_DIR "D:/Qt/5.15.2/mingw81_64/bin")
     set(Qt5Core_VERSION "5.15")
@@ -58,7 +64,7 @@ if(WIN)
     set(Qt5Widgets_DIR "D:/Qt/5.15.2/mingw81_64/lib/cmake/Qt5Widgets") 
 endif()
 
-if(MACOS)
+if(${OS_DETAILS} STREQUAL macOS)
 set(CMAKE_PREFIX_PATH "$ENV{Qt_DIR}/$ENV{Qt_Version}/macos/lib/cmake/Qt6")
 endif()
 
@@ -78,13 +84,13 @@ find_package(Qt6 REQUIRED COMPONENTS Qml Quick Widgets Sql)
 
  message(STATUS "--------------------------------")
 
-if(LINUX)
+ if(${OS_DETAILS} STREQUAL Windows)
 include_directories(${Qt5_DIR}/gcc_64/include/)
 include_directories(${Qt5_DIR}/gcc_64/include/QtWidgets)
 include_directories(./)
 endif()
 
-if(MACOS)
+if(${OS_DETAILS} STREQUAL macOS)
 include_directories($ENV{Qt_DIR}/$ENV{Qt_Version})
 set(MYSQL_CONNECTOR_CPP_DIR "/usr/local/mysql-cxx-arm")
 set(MYSQL_CONNECTOR_CPP_INCLUDE_DIR "${MYSQL_CONNECTOR_CPP_DIR}/include")
@@ -112,8 +118,18 @@ add_executable(${PROJECT_NAME}
         ${RESOURCES})
 endif()
 
-if(LINUX)
+if(${OS_DETAILS} STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
+endif()
+
+if(${OS_DETAILS} STREQUAL Windows)
+target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
+endif()
+
+if(${OS_DETAILS} STREQUAL macOS)
+target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
+set_target_properties(${PROJECT_NAME}  PROPERTIES
+                        MACOSX_BUNDLE FALSE)
 endif()
 
 if(ANDROID)
@@ -121,13 +137,3 @@ if(ANDROID)
     target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
 endif()
 
-if(WIN)
-target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
-endif()
-
-if(MACOS)
-target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
-set_target_properties(${PROJECT_NAME}  PROPERTIES       
-                        RUNTIME_OUTPUT_DIRECTORY ./release/MacOS
-                        MACOSX_BUNDLE FALSE)
-endif()
