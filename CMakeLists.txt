@@ -4,7 +4,8 @@ project(Couple)
 
 set(PROJECT_NAME "Couple") 
 
-message(STATUS "------- HOST DETAILS -------")cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
+message(STATUS "------- HOST DETAILS -------")
+cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
 message("Detected operating system: ${OS_DETAILS}")
 
 message(STATUS "------- COMPILER CONFIGURATION -------")
