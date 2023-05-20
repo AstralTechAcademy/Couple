@@ -4,14 +4,10 @@ project(Couple)
 
 set(PROJECT_NAME "Couple") 
 
-# Use the cmake_host_system_information command to get the system information
-cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
-
-# Print the detected operating system name
+message(STATUS "------- HOST DETAILS -------")cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
 message("Detected operating system: ${OS_DETAILS}")
 
 message(STATUS "------- COMPILER CONFIGURATION -------")
-
 if(LINUX)
     set(CMAKE_C_COMPILER "/usr/bin/clang")
     set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
@@ -92,19 +88,6 @@ endif()
 
 if(${OS_DETAILS} STREQUAL macOS)
 include_directories($ENV{Qt_DIR}/$ENV{Qt_Version})
-set(MYSQL_CONNECTOR_CPP_DIR "/usr/local/mysql-cxx-arm")
-set(MYSQL_CONNECTOR_CPP_INCLUDE_DIR "${MYSQL_CONNECTOR_CPP_DIR}/include")
-set(MYSQL_CONNECTOR_CPP_LIB_DIR "${MYSQL_CONNECTOR_CPP_DIR}/lib64")
-include_directories(${MYSQL_CONNECTOR_CPP_INCLUDE_DIR})
-link_directories(${MYSQL_CONNECTOR_CPP_LIB_DIR})
-endif()
-
-if(ANDROID)
-set(MYSQL_CONNECTOR_CPP_DIR "/usr/local/mysql-cxx-arm64_v8a")
-set(MYSQL_CONNECTOR_CPP_INCLUDE_DIR "${MYSQL_CONNECTOR_CPP_DIR}/include")
-set(MYSQL_CONNECTOR_CPP_LIB_DIR "${MYSQL_CONNECTOR_CPP_DIR}/lib64")
-include_directories(${MYSQL_CONNECTOR_CPP_INCLUDE_DIR})
-link_directories(${MYSQL_CONNECTOR_CPP_LIB_DIR})
 endif()
 
 qt6_add_resources(RESOURCES ./qml.qrc)
@@ -119,11 +102,11 @@ add_executable(${PROJECT_NAME}
 endif()
 
 if(${OS_DETAILS} STREQUAL Linux)
-    target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
+    target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
 endif()
 
 if(${OS_DETAILS} STREQUAL Windows)
-target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
+target_link_libraries(${PROJECT_NAME} Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
 endif()
 
 if(${OS_DETAILS} STREQUAL macOS)
@@ -134,6 +117,6 @@ endif()
 
 if(ANDROID)
     set_target_properties(${PROJECT_NAME}  PROPERTIES QT_ANDROID_ABIS ${ANDROID_ABIS})
-    target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Quick Qt::Qml Qt::Widgets Qt::Sql mysqlcppconn mysqlcppconn8)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Quick Qt::Qml Qt::Widgets Qt::Sql)
 endif()
 
